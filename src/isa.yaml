@@ -1,0 +1,21 @@
+word_size: 16
+
+registers:
+  count: 8
+  names: [r0, r1, r2, r3, r4, r5, r6, r7]
+
+formats:
+  R:
+    fields:
+      opcode: 4
+      rd: 3
+      rs1: 3
+      rs2: 3
+      funct: 3
+
+  I:
+    fields:
+      opcode: 4
+      rd: 3
+      rs1: 1
+      imm: 8
