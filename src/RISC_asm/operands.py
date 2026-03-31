@@ -1,14 +1,41 @@
+from dataclasses import dataclass
 
 
-class Register:
-    def __init__(self, name: str):
-        self.index = int(name[1:])
+@dataclass(slots=True)
+class Operand:
+    text: str
+    kind: str
 
-class Immediate:
-    def __init__(self, value: str):
-        self.value =int(value, base = 2)
 
-class Label:
-    def __init__(self, name):
+@dataclass(slots=True)
+class Register(Operand):
+    name: str
+    index: int
+
+    def __init__(self, name: str, index: int):
+        self.text = name
+        self.kind = "register"
         self.name = name
-        self.address = None
+        self.index = index
+
+
+@dataclass(slots=True)
+class Immediate(Operand):
+    value: int
+
+    def __init__(self, value_text: str):
+        self.text = value_text
+        self.kind = "immediate"
+        self.value = int(value_text, 0)
+
+
+@dataclass(slots=True)
+class Label(Operand):
+    name: str
+    address: int | None = None
+
+    def __init__(self, name: str, address: int | None = None):
+        self.text = name
+        self.kind = "label"
+        self.name = name
+        self.address = address

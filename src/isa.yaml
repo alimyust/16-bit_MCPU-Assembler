@@ -1,21 +1,127 @@
 word_size: 16
+#  16 registers (r0-r15)
+#  5-bit opcode
+#  r0 as zero register
+#  Instruction formats:
+#  RR: opcode (4 bits), cond (3 bits), s (1 bit), rd (4 bits), rn (4 bits), rm (4 bits), (0000)
+#  RI: opcode (4 bits), cond (3 bits), s (1 bit), rd (4 bits),  rn (4 bits), imm (8 bits)
+#  (temp) I: opcode (4 bits), cond (3 bits), s (1 bit), rd (4 bits), imm (12 bits)
+#  BR: opcode (4 bits), cond (3 bits), offset (16 bits), (0)
+
+#{} indicate optional fields in the syntax
 
 registers:
-  count: 8
-  names: [r0, r1, r2, r3, r4, r5, r6, r7]
+  count: 16
+  names: [r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15]
 
 formats:
-  R:
+  RR:
     fields:
       opcode: 4
-      rd: 3
-      rs1: 3
-      rs2: 3
-      funct: 3
+      cond: 3
+      s: 1
+      rd: 4
+      rn: 4
+      rm: 4
+  RI:
+    fields:
+      opcode: 4
+      cond: 3
+      s: 1
+      rd: 4
+      rn: 4
+      imm: 8
 
   I:
     fields:
       opcode: 4
-      rd: 3
-      rs1: 1
-      imm: 8
+      cond: 3
+      s: 1
+      rd: 4
+      imm: 12
+
+  BR:
+    fields:
+      opcode: 4
+      cond: 3
+      offset: 16
+
+#
+instructions:
+  ADD:
+    format: RR
+    opcode: 0b0000
+    syntax: "ADD{s}{cond} rd, rn, rm"
+
+  ADDI:
+    format: RI
+    opcode: 0b0001
+    syntax: "ADDI{s}{cond} rd, rn, imm"
+
+  SUB:
+    format: RR
+    opcode: 0b0010
+    syntax: "SUB{s}{cond} rd, rn, rm"
+
+  SUBI:
+    format: RI
+    opcode: 0b0011
+    syntax: "SUBI{s}{cond} rd, rn, imm"
+
+  ORR:
+    format: RR
+    opcode: 0b0100
+    syntax: "ORR{s}{cond} rd, rn, rm"
+
+  ORRI:
+    format: RI
+    opcode: 0b0100
+    syntax: "ORRI{s}{cond} rd, rn, imm"
+
+
+  EOR:
+    format: RR
+    opcode: 0b0101
+    syntax: "EOR{s}{cond} rd, rn, rm"
+
+  EORI:
+    format: RI
+    opcode: 0b0101
+    syntax: "EORI{s}{cond} rd, rn, imm"
+
+  AND:
+    format: RR
+    opcode: 0b0110
+    syntax: "AND{s}{cond} rd, rn, rm"
+
+  ANDI:
+    format: RI
+    opcode: 0b0110
+    syntax: "ANDI{s}{cond} rd, rn, imm"
+
+  BR:
+    format: BR
+    opcode: 0b0111
+    syntax: "BR{cond} offset"
+  
+  LDR:
+    format: RI
+    opcode: 0b1000
+    syntax: "LDR{s}{cond} rd, [rn, imm]"
+
+  STR:
+    format: RI
+    opcode: 0b1001
+    syntax: "STR{s}{cond} rd, [rn, imm]"
+
+  
+
+  
+conditions:
+  AL: 0b000 # default condition, always execute
+  EQ: 0b001
+  NE: 0b010
+  GT: 0b011
+  LT: 0b100
+  GE: 0b101
+  LE: 0b110
